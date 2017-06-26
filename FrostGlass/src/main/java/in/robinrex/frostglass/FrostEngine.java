@@ -27,7 +27,7 @@ public class FrostEngine {
         //Prevent object creation. Has to be accessed through FrostGlass.
     }
 
-    public static enum FrostMode {
+    public enum FrostMode {
         REFROST,
         ORIGINAL
     }
@@ -79,7 +79,7 @@ public class FrostEngine {
      * @return The frosted bimap.
      */
     public Bitmap frost(View src, int radius) {
-        Bitmap bitmap = getBitmapForView(src, radius);
+        Bitmap bitmap = getBitmapForView(src, 1f);
         return frost(bitmap, radius);
     }
 

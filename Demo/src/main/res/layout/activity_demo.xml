@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:onClick="defrost"
     android:layout_height="match_parent"
-    android:background="@drawable/tes"
+
     tools:context="in.robinrex.frostglassdemo.DemoActivity">
 
 
@@ -16,8 +16,36 @@
         android:textSize="32sp"
         android:id="@+id/demoView"
         android:textColor="#fff"
-
+        android:background="@drawable/tes"
         android:text="Hello World!"
         android:layout_height="wrap_content"/>
+
+    <in.robinrex.frostglass.FGView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/demoFrostView"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"/>
+
+    <in.robinrex.frostglass.FGLayout
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:overlayColor="#99000000"
+        android:padding="50dp"
+        android:id="@+id/demoFrostLayout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="50dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:text="This is a sample layout that demonstrates the ability of the FrostGlass library."
+            />
+    </in.robinrex.frostglass.FGLayout>
 
 </RelativeLayout>

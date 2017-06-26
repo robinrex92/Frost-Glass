@@ -44,7 +44,7 @@ public class FrostableActivity extends AppCompatActivity {
         super.onResume();
 
         if(mFrostGlass.isLive())
-            mFrostGlass.resumeFrost();
+            mFrostGlass.resumeFrosting();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class FrostableActivity extends AppCompatActivity {
         super.onPause();
 
         if(mFrostGlass.isLive())
-            mFrostGlass.pauseFrost();
+            mFrostGlass.pauseFrosting();
     }
 
     @Override

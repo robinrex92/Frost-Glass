@@ -1,1 +1,1 @@
-include ':app', ':FrostGlass'
+include ':Demo', ':FrostGlass'

@@ -14,7 +14,7 @@ public class ViewDragger implements View.OnTouchListener {
 
     private boolean mInvalidate;
 
-    public static ViewDragger drag(View view) {
+    public static ViewDragger enableDragging(View view) {
         ViewDragger dragger = new ViewDragger();
         view.setOnTouchListener(dragger);
 

@@ -19,7 +19,10 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 /**
- * This is the core Frost Glass component.
+ * This is the core Frost Glass component. This is not a view or a layout. This class can be used with any activity,
+ * when you need to just apply the frost effect to  the entire activity.
+ *
+ * @author Robin Rex G.
  */
 public class FrostGlass implements Choreographer.FrameCallback {
 
@@ -60,6 +63,11 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
     private boolean mIsFrostingDefrostingInProcess = false;
 
+    /**
+     * The public constructor to instantiate this glass.
+     *
+     * @param context The activity that needs to be frosted.
+     * */
     public FrostGlass(Activity context) {
 
         FrostEngine.init(context);
@@ -72,30 +80,66 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
     }
 
+    /**
+     * Method to set the overlay color, that will be applied on top of the frost view.
+     *
+     * @param color The color that will be overlaid, on top of the frost effect.
+     * */
     public void setOverlayColor(@ColorInt int color) {
         mOverlayColor = color;
         mOverlayPaint.setColor(mOverlayColor);
     }
 
-    public void setFrostQuality(@IntRange(from = 1, to = 100) int downsampleFactor) {
+    /**
+     * Method to set the downsample factor, that will be used when creating bitmaps for the frost view.
+     * */
+    public void setDownsampleFactor(@IntRange(from = 1, to = 100) int downsampleFactor) {
         this.mDownsampleFactor = downsampleFactor;
     }
 
+    /**
+     * Method to set the frosting duration.
+     *
+     * @param duration The duration with which the frosting effect has to be applied. Frosting will be done gradually
+     *                 in a linear fashion throughout the duration.
+     * */
     public void setFrostingDuration(int duration) {
         this.mFrostingDuration = duration;
     }
 
+    /**
+     * Applies a frosted glass effect to the activity this view is initialized with. This method takes a screen shot
+     * of the activity and applies the frost effect to that screen shot. The frosted view is then added to the top of
+     * the activity.
+     *
+     * If the content of the activity changes after applying the frosting, the frost effect doesn't change. In other
+     * words, once frosted, the screen will be a static blurred image with whatever content the activity had, when
+     * this method was called.
+     *
+     * @param blurRadius The blur radius that will be passed to the frost engine. The higher the radius, the more the
+     *                   frosting effect.
+     * */
     public void staticFrost(int blurRadius) {
         frostScreen(blurRadius, false);
     }
 
+    /**
+     * Same as {@link #staticFrost(int)}, with a difference that the frosting effect created by this method, is LIVE.
+     * Which means, even after the frost view is created and overlaid on to the activity view, the content of the
+     * activity view will be tracked. If the original activity view changes, so will the frosted view.
+     *
+     * However, this method uses more CPU power that {@link #staticFrost(int)} and should be used only when the
+     * content behind the frost view should be tracked.
+     *
+     * @param blurRadius The blur radius that will be passed to the frost engine. The higher the radius, the more the
+     *                   frosting effect.
+     * */
     public void liveFrost(int blurRadius) {
         //// TODO: 26/6/17 Check if activity is frosted already. If yes skip the animaton
         frostScreen(blurRadius, true);
     }
 
     private void frostScreen(final int blurRadius, boolean isLive) {
-
 
         if(!canFrost())
             return;
@@ -163,6 +207,9 @@ public class FrostGlass implements Choreographer.FrameCallback {
                             .LayoutParams.MATCH_PARENT);
             frostOverlay.setLayoutParams(lp);
         } else {
+
+            Logger.info("Reusing existing Frost Glass.");
+
             frostOverlay = prevFrostView;
 
             //Screen has been frosted before, so hide the frost view before getting another screen shot.
@@ -214,8 +261,8 @@ public class FrostGlass implements Choreographer.FrameCallback {
                 blurredContent[0] = mFrostEngine.frost(bitmapToBlur, (int) animation.getAnimatedValue());
 
                 //Overlay drawing
-                //mFrostedBitmapCanvas = new Canvas(blurredContent[0]);
-                //mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
+                mFrostedBitmapCanvas = new Canvas(blurredContent[0]);
+                mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
 
                 frostOverlay.setBackground(new BitmapDrawable(mActivity.getResources(), blurredContent[0]));
 
@@ -260,7 +307,6 @@ public class FrostGlass implements Choreographer.FrameCallback {
         if (prevFrostView == null)
             mActivityView.addView(frostOverlay);
 
-        Logger.debug("Animator started");
         frostAnimator.start();
 
         mIsFrostingDefrostingInProcess = true;
@@ -270,6 +316,11 @@ public class FrostGlass implements Choreographer.FrameCallback {
         return (FrameLayout) mActivity.getWindow().findViewById(android.R.id.content);
     }
 
+    /**
+     * Defrosts, i.e removes the frosting effect applied to the activity view. Also removes the view added to the
+     * activity to show the frosting effect. If no frosting is active, either static or live, this method doesn't
+     * do anything.
+     * */
     public void defrost() {
 
         if(!canDefrost()) {
@@ -343,7 +394,7 @@ public class FrostGlass implements Choreographer.FrameCallback {
         }
 
         if(mActivityView == null) {
-            Logger.info("Activity not frosted. Not defrosting.");
+            Logger.info("Activity not frosted. Nothing to defrost.");
             return false;
         }
 
@@ -352,39 +403,63 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
     @Override
     public void doFrame(long frameTimeNanos) {
+
         if (mFrostView != null && mActivityView != null) {
             mFrostView.setAlpha(0);
             mFrostedBitmap = mFrostEngine.fastFrost(mActivityView, mBlurRadius, mDownsampleFactor);
             mFrostView.setAlpha(1);
 
             //Overlay paint
-            //mFrostedBitmapCanvas = new Canvas(mFrostedBitmap);
-            //mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
+            mFrostedBitmapCanvas = new Canvas(mFrostedBitmap);
+            mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
 
             mFrostView.setBackground(new BitmapDrawable(mActivityView.getResources(), mFrostedBitmap));
 
             //Re-post the callback for next frame.
             Choreographer.getInstance().postFrameCallback(this);
         }
+
     }
 
+    /**
+     * Method to check whether live frosting is active on the activity.
+     *
+     * @return Returns true if live frosting is enabled, false otherwise.
+     * */
     public boolean isLive() {
         return mIsLiveFrostEnabled;
     }
 
+    /**
+     * Method to check whether any type of frosting is applied on the activity. Either static or live.
+     *
+     * @return Returns true if either static or live frosting is currently applied, false otherwise.
+     * */
     public boolean isFrosted() {
         return (mActivityView != null);
     }
 
+    /**
+     * Resumes the live frosting if enabled. If live frosting is not enabled, calling this method doesn't do anything.
+     * */
     public void resumeFrosting() {
+        Logger.info(this, "Resumed frosting.");
         Choreographer.getInstance().postFrameCallback(this);
     }
 
+    /**
+     * Pauses the live frosting if enabled. If live frosting is not enabled, calling this method doesn't do anything.
+     * */
     public void pauseFrosting() {
+        Logger.info(this, "Paused frosting.");
         Choreographer.getInstance().removeFrameCallback(this);
     }
 
+    /**
+     * Removes any frosting applied to the view, and destroys the frost engine.
+     * */
     public void destroy() {
+        // TODO: 26/6/17 Check if any frosting is applied, and remove them first or throw exception
         mFrostEngine.shutdown();
     }
 }

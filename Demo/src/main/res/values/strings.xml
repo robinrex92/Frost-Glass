@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FrostGlassDemo</string>
+    <string name="message_live_mode">LIVE MODE  Drag this view around to see the difference</string>
+    <string name="message_static_mode">STATIC MODE  Drag this view around to see the difference</string>
 </resources>

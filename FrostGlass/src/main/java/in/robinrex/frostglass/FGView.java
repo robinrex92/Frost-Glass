@@ -82,13 +82,6 @@ public class FGView extends View implements Choreographer.FrameCallback {
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
-
-        Logger.debug("What?");
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mBlurredView != null) {
@@ -204,9 +197,6 @@ public class FGView extends View implements Choreographer.FrameCallback {
     @Override
     public void doFrame(long frameTimeNanos) {
         invalidate();
-
-        Logger.debug("Invalidating");
-
         if (mLive)
             Choreographer.getInstance().postFrameCallback(this);
     }

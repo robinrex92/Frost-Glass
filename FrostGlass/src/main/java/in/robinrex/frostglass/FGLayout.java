@@ -121,8 +121,6 @@ public class FGLayout extends FrameLayout implements Choreographer.FrameCallback
                 canvas.restore();
             }
             canvas.drawColor(mOverlayColor);
-
-            Logger.debug("Drawing");
         }
 
         super.dispatchDraw(canvas);

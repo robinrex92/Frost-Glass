@@ -59,6 +59,7 @@ public class FrostEngine {
      * @return The frosted bimap.
      */
     public Bitmap frost(Bitmap src, int radius) {
+
         final Allocation input = Allocation.createFromBitmap(rs, src);
         final Allocation output = Allocation.createTyped(rs, input.getType());
         final ScriptIntrinsicBlur script;

@@ -43,6 +43,8 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="#fff"
+            android:gravity="center"
+            android:id="@+id/demoLayoutView"
             android:textSize="18sp"
             android:text="This is a sample layout that demonstrates the ability of the FrostGlass library."
             />

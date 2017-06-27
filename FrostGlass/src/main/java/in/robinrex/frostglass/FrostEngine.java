@@ -1,5 +1,7 @@
 package in.robinrex.frostglass;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,11 +19,9 @@ import android.view.View;
  */
 public class FrostEngine {
 
-    private static FrostEngine instance;
+    private static FrostEngine mFrostEngine;
 
     private RenderScript rs;
-
-    private FrostMode mFrostMode = FrostMode.ORIGINAL;
 
     private FrostEngine() {
         //Prevent object creation. Has to be accessed through FrostGlass.
@@ -36,18 +36,19 @@ public class FrostEngine {
      * Initializes the Frost engine.
      */
     public static void init(Context context) {
-        if (instance != null) {
+        if (mFrostEngine != null) {
             return;
         }
 
-        instance = new FrostEngine();
-        instance.rs = RenderScript.create(context);
+        mFrostEngine = new FrostEngine();
+        mFrostEngine.rs = RenderScript.create(context);
     }
 
     /**
      * Shuts down the Frost engine. And destroys the renderscript associated with it.
      */
     public void shutdown() {
+        Logger.info("Shutting down Frost Engine");
         rs.destroy();
     }
 
@@ -85,7 +86,7 @@ public class FrostEngine {
     }
 
     /**
-     * Same as {@link #frost(View, int)} and {@link #fastFrost(View, int, float)}, but with a downscale option. The
+     * Same as {@link #frost(View, int)} and {@link #frost(View, int)}, but with a downscale option. The
      * bitmap created for the passed in view, will be down scaled for faster processing.
      *
      * @param src             The source view to which frosting effect has to be applied.
@@ -106,9 +107,17 @@ public class FrostEngine {
      * @return The bitmap created from the view.
      */
     public Bitmap getBitmapForView(View src, float downscaleFactor) {
+
+        int scaledWidth = (int) (src.getWidth() / downscaleFactor);
+        int scaledHeight = (int) (src.getHeight() / downscaleFactor);
+
+        //Edge artifact workaround.
+        //scaledWidth = scaledWidth - scaledWidth % 4 + 4;
+        //scaledHeight = scaledHeight - scaledHeight % 4 + 4;
+
         Bitmap bitmap = Bitmap.createBitmap(
-                (int) (src.getWidth() / downscaleFactor),
-                (int) (src.getHeight() / downscaleFactor),
+                scaledWidth,
+                scaledHeight,
                 Bitmap.Config.ARGB_8888
         );
 
@@ -122,16 +131,84 @@ public class FrostEngine {
     }
 
     /**
-     * Returns the existing instance of the Frost Engine. Throws IllegalStateException if the engine has not been
+     * Returns the existing mFrostEngine of the Frost Engine. Throws IllegalStateException if the engine has not been
      * initialized before calling this method.
      *
-     * @return An instance of {@link FrostEngine}.
+     * @return An mFrostEngine of {@link FrostEngine}.
      */
     public static FrostEngine getInstance() {
-        if (instance == null) {
+        if (mFrostEngine == null) {
             throw new IllegalStateException("FrostEngine not initialized!");
         }
 
-        return instance;
+        return mFrostEngine;
+    }
+
+    public static abstract class GradualFroster {
+
+        private int mEndRadius = 1;
+
+        private int mStartRadius = 1;
+
+        private ValueAnimator mValueAnimator;
+
+        private long mFrostDuration = 0;
+
+        public GradualFroster(int startRadius, int endRadius) {
+            this.mStartRadius = startRadius;
+            this.mEndRadius = endRadius;
+        }
+
+        public void setDuration(int frostingDurationMillis) {
+            this.mFrostDuration = frostingDurationMillis;
+        }
+
+        public void startFrosting() {
+
+            onFrostingStarted();
+
+            mValueAnimator = ValueAnimator.ofInt(mStartRadius, mEndRadius);
+            mValueAnimator.setDuration(mFrostDuration);
+
+            mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    onFrostNextFrame((int) animation.getAnimatedValue());
+                }
+            });
+
+            mValueAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    //Do nothing.
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+
+                    onFrostingComplete();
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    //Do nothing
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    //Do nothing
+                }
+            });
+
+            mValueAnimator.start();
+        }
+
+        public abstract void onFrostNextFrame(int currentFrostRadius);
+
+        public abstract void onFrostingComplete();
+
+        public abstract void onFrostingStarted();
+
     }
 }

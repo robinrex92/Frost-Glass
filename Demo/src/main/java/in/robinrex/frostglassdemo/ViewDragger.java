@@ -28,7 +28,7 @@ public class ViewDragger implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent event) {
 
-        if(mInvalidate)
+        if (mInvalidate)
             view.invalidate();
 
         switch (event.getAction()) {

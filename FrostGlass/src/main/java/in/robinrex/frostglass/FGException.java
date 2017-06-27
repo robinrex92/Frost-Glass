@@ -1,7 +1,7 @@
 package in.robinrex.frostglass;
 
 /**
- * Custom exception class used by this library.
+ * Custom exception class used by FrostGlass.
  *
  * @author Robin Rex G.
  */

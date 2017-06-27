@@ -25,25 +25,25 @@ public class FrostableActivity extends AppCompatActivity {
     }
 
     public void staticFrost(int blurRadius) {
-        if(mFrostGlass != null)
+        if (mFrostGlass != null)
             mFrostGlass.staticFrost(blurRadius);
     }
 
     public void liveFrost(int blurRadius) {
-        if(mFrostGlass != null)
+        if (mFrostGlass != null)
             mFrostGlass.liveFrost(blurRadius);
     }
 
     public void defrost() {
-        if(mFrostGlass != null)
-            mFrostGlass.defrost();
+        if (mFrostGlass != null)
+            mFrostGlass.defrostScreen();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if(mFrostGlass.isLive())
+        if (mFrostGlass.isLive())
             mFrostGlass.resumeFrosting();
     }
 
@@ -51,7 +51,7 @@ public class FrostableActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        if(mFrostGlass.isLive())
+        if (mFrostGlass.isLive())
             mFrostGlass.pauseFrosting();
     }
 
@@ -59,7 +59,7 @@ public class FrostableActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if(mFrostGlass != null)
+        if (mFrostGlass != null)
             mFrostGlass.destroy();
     }
 }

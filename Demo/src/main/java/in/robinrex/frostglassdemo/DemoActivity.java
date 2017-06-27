@@ -1,8 +1,7 @@
 package in.robinrex.frostglassdemo;
 
-import android.graphics.Color;
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,38 +30,43 @@ public class DemoActivity extends FrostableActivity {
         setContentView(R.layout.activity_demo);
 
         demoView = (TextView) findViewById(R.id.demoView);
-        demoFrostView = (FGView) findViewById(R.id.demoFrostView);
-        demoFrostLayout = (FGLayout) findViewById(R.id.demoFrostLayout);
-        demoFrostLayoutTextView = (TextView) findViewById(R.id.demoLayoutView);
-
-        // Set the background views that will be used for frosting. It has to be kept in mind that FGView and FGLayout
-        // should not be a child of the passed view. This will be fixed in the future versions.
-        demoFrostView.frostWith(demoView);
-        demoFrostLayout.frostWith(demoView);
-
-        ViewDragger.enableDragging(demoFrostView);
-        ViewDragger.enableDragging(demoFrostLayout);
-
-        // Animates a text in the screen to demonstrate live frosting.
+//        demoFrostView = (FGView) findViewById(R.id.demoFrostView);
+//        demoFrostLayout = (FGLayout) findViewById(R.id.demoFrostLayout);
+//        demoFrostLayoutTextView = (TextView) findViewById(R.id.demoLayoutView);
+//
+//        // Set the background views that will be used for frosting. It has to be kept in mind that FGView and FGLayout
+//        // should not be a child of the passed view. This will be fixed in the future versions.
+//        demoFrostView.frostWith(demoView);
+//        demoFrostLayout.frostWith(demoView);
+//
+//        ViewDragger.enableDragging(demoFrostView);
+//        ViewDragger.enableDragging(demoFrostLayout);
+//
+//        // Animates a text in the screen to demonstrate live frosting.
         startTextChanger();
-
-        // Enables and disabled live frost mode on the demo view with a delay between every toggle.
-        autoToggleLiveMode();
-
-
-        //The following code is for activity blurring using FrostGlass.
-        //Set the frost duration.
-        getFrostGlass().setFrostingDuration(200);
-
-        //Set the frosting amount. Higher number means more blurring, and faster.
+//
+//        // Enables and disabled live frost mode on the demo view with a delay between every toggle.
+////        autoToggleLiveMode();
+//
+//
+//        //The following code is for activity blurring using FrostGlass.
+//        //Set the frost duration.
+        getFrostGlass().setFrostingDuration(100);
+//
+//        //Set the frosting amount. Higher number means more blurring, and faster.
         getFrostGlass().setDownsampleFactor(12);
-
-        getFrostGlass().setOverlayColor(Color.parseColor("#44000000"));
+//
+//        getFrostGlass().setOverlayColor(Color.parseColor("#44000000"));
 
         //set the radius of the blur.
-        liveFrost(12);
+        staticFrost(12);
 
-
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                liveFrost(12);
+            }
+        }, 5000);
     }
 
     private void autoToggleLiveMode() {
@@ -74,7 +78,7 @@ public class DemoActivity extends FrostableActivity {
             public void run() {
 
                 Logger.debug("Toggling live mode");
-                if(!demoFrostLayout.isLive()) {
+                if (!demoFrostLayout.isLive()) {
                     demoFrostLayout.enableLiveMode();
                     demoFrostLayoutTextView.setText(getString(R.string.message_live_mode));
                 } else {
@@ -97,10 +101,11 @@ public class DemoActivity extends FrostableActivity {
 
         Runnable textChangeRunnable = new Runnable() {
             int charCount = 0;
+
             @Override
             public void run() {
 
-                if(charCount == helloWorld.length())
+                if (charCount == helloWorld.length())
                     charCount = 0;
 
                 demoView.setText(helloWorld.substring(0, charCount));
@@ -115,9 +120,9 @@ public class DemoActivity extends FrostableActivity {
 
     //Defrosts the frost glass and thus, making the activity clearly visible again.
     public void defrost(View view) {
-        if(getFrostGlass().isFrosted())
+        if (getFrostGlass().isFrosted()) {
             defrost();
-        else
-            liveFrost(12);
+        } else
+            liveFrost(17);
     }
 }

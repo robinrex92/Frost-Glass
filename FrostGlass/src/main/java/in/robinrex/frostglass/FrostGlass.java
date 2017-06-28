@@ -250,17 +250,6 @@ public class FrostGlass implements Choreographer.FrameCallback {
             frostView.setAlpha(0);
         }
 
-//        ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.8f);
-//        recessAnimator.setDuration(mFrostingDuration);
-//        recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                mActivityView.getChildAt(0).setScaleX((Float) animation.getAnimatedValue());
-//                mActivityView.getChildAt(0).setScaleY((Float) animation.getAnimatedValue());
-//            }
-//        });
-//        recessAnimator.start();
-
         final Bitmap sourceBitmap = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
 
         //frostGradually();
@@ -361,19 +350,6 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
     private void defrost() {
 
-        ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.8f, 1);
-        recessAnimator.setDuration(mFrostingDuration);
-        recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (mActivityView != null) {
-                    mActivityView.getChildAt(0).setScaleX((Float) animation.getAnimatedValue());
-                    mActivityView.getChildAt(0).setScaleY((Float) animation.getAnimatedValue());
-                }
-            }
-        });
-        recessAnimator.start();
-
         FrostEngine.GradualFroster defroster = new FrostEngine.GradualFroster(mBlurRadius, 1) {
 
             Bitmap blurredSourceBitmap;
@@ -463,9 +439,12 @@ public class FrostGlass implements Choreographer.FrameCallback {
     public void doFrame(long frameTimeNanos) {
 
         if (mFrostView != null && mActivityView != null) {
+
             mFrostView.setAlpha(0);
-            mFrostedBitmap = mFrostEngine.fastFrost(mActivityView, mBlurRadius, mDownsampleFactor);
+            mFrostedBitmap = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
             mFrostView.setAlpha(1);
+
+            mFrostedBitmap = mFrostEngine.frost(mFrostedBitmap, mBlurRadius);
 
             //Overlay paint
             mFrostedBitmapCanvas = new Canvas(mFrostedBitmap);

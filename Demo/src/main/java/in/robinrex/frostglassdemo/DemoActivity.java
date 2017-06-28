@@ -55,7 +55,7 @@ public class DemoActivity extends FrostableActivity {
 //
 //        //The following code is for activity blurring using FrostGlass.
 //        //Set the frost duration.
-        getFrostGlass().setFrostingDuration(100);
+        getFrostGlass().setFrostingDuration(5000);
 //
 //        //Set the frosting amount. Higher number means more blurring, and faster.
         getFrostGlass().setDownsampleFactor(8);
@@ -124,11 +124,24 @@ public class DemoActivity extends FrostableActivity {
 
     //Defrosts the frost glass and thus, making the activity clearly visible again.
     public void defrost(View view) {
+        final View test = findViewById(R.id.test);
         if (getFrostGlass().isFrosted()) {
+
+            ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.8f, 1);
+            recessAnimator.setDuration(100);
+            recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    test.setScaleX((Float) animation.getAnimatedValue());
+                    test.setScaleY((Float) animation.getAnimatedValue());
+                }
+            });
+            recessAnimator.start();
+
             defrost();
         } else {
 
-            final View test = findViewById(R.id.test);
+
             ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.8f);
             recessAnimator.setDuration(100);
             recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -143,6 +156,7 @@ public class DemoActivity extends FrostableActivity {
 
             Dialog dialog = new Dialog(this);
             dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
+            dialog.getWindow().setDimAmount(0f);
             dialog.setContentView(R.layout.dialog);
             dialog.show();
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {

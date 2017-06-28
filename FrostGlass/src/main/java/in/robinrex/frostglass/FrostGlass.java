@@ -164,6 +164,7 @@ public class FrostGlass implements Choreographer.FrameCallback {
     }
 
     private void frostImmediate(int blurRadius, boolean isLive) {
+
         mFrostView.setAlpha(0);
         Bitmap bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
         mFrostView.setAlpha(1);
@@ -183,6 +184,7 @@ public class FrostGlass implements Choreographer.FrameCallback {
         } else {
             Logger.info("Moving from live to static frosting");
             Choreographer.getInstance().removeFrameCallback(this);
+            mIsLiveFrostEnabled = false;
         }
 
     }
@@ -223,28 +225,22 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
     private void frost() {
 
-        //Check whether we already have added the frosted overlay view to the activity.
-        final View prevFrostView = mActivityView.findViewById(R.id.blur_view_id);
-
-        final View frostOverlay;
-
         //Screen hasn't been frosted before.
-        if (prevFrostView == null) {
-            frostOverlay = new View(mActivity);
-            frostOverlay.setId(R.id.blur_view_id);
+        if (mFrostView == null) {
+            mFrostView = new View(mActivity);
+            mFrostView.setId(R.id.blur_view_id);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup
 
                             .LayoutParams.MATCH_PARENT);
-            frostOverlay.setLayoutParams(lp);
+            mFrostView.setLayoutParams(lp);
+            mActivityView.addView(mFrostView);
         } else {
 
             Logger.info("Reusing existing Frost Glass.");
 
-            frostOverlay = prevFrostView;
-
             //Screen has been frosted before, so hide the frost view before getting another screen shot.
-            frostOverlay.setAlpha(0);
+            mFrostView.setAlpha(0);
         }
 
         final Bitmap sourceBitmap = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
@@ -271,19 +267,25 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
                 FrostTimeTracker.start();
 
-                // TODO: 26/6/17 Check frost mode implementation
+                if (bitmapToBlur != null && !bitmapToBlur.isRecycled()) {
+                    Logger.debug("Recycling when frosting");
+                    bitmapToBlur.recycle();
+                    blurredSourceBitmap.recycle();
+                    mFrostView.setBackground(null);
+                }
+
                 if (mIsLiveFrostEnabled) {
-                    frostOverlay.setAlpha(0);
+                    mFrostView.setAlpha(0);
                     bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
-                    frostOverlay.setAlpha(1);
+                    mFrostView.setAlpha(1);
                 } else {
                     if (mFrostMode == FrostEngine.FrostMode.REFROST) {
-                        bitmapToBlur = Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap
-                                .getHeight());
+                        // TODO: 28/6/17 Has to be implemented.
+                        bitmapToBlur = sourceBitmap;
                     } else {
-                        frostOverlay.setAlpha(0);
+                        mFrostView.setAlpha(0);
                         bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
-                        frostOverlay.setAlpha(1);
+                        mFrostView.setAlpha(1);
                     }
                 }
 
@@ -293,7 +295,7 @@ public class FrostGlass implements Choreographer.FrameCallback {
                 mFrostedBitmapCanvas = new Canvas(blurredSourceBitmap);
                 mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
 
-                frostOverlay.setBackground(new BitmapDrawable(mActivity.getResources(), blurredSourceBitmap));
+                mFrostView.setBackground(new BitmapDrawable(mActivity.getResources(), blurredSourceBitmap));
 
                 FrostTimeTracker.frameComplete();
             }
@@ -308,8 +310,6 @@ public class FrostGlass implements Choreographer.FrameCallback {
                     Logger.debug("Enabling live frosting");
                     Choreographer.getInstance().postFrameCallback(FrostGlass.this);
                 }
-
-                mFrostView = frostOverlay;
             }
 
             @Override
@@ -320,9 +320,6 @@ public class FrostGlass implements Choreographer.FrameCallback {
         };
 
         froster.setDuration(mFrostingDuration);
-
-        if (prevFrostView == null)
-            mActivityView.addView(frostOverlay);
 
         froster.startFrosting();
 
@@ -339,7 +336,6 @@ public class FrostGlass implements Choreographer.FrameCallback {
         if (mFrostView != null && mActivityView != null)
             mActivityView.removeView(mFrostView);
 
-        // TODO: 28/6/17 this variable is used to check "isFrosted". Not appropriate. Change it.
         mActivityView = null;
 
         mFrostView = null;
@@ -356,6 +352,14 @@ public class FrostGlass implements Choreographer.FrameCallback {
             @Override
             public void onFrostNextFrame(int currentFrostRadius) {
                 mFrostView.setAlpha(0);
+
+                if (bitmapToBlur != null && !bitmapToBlur.isRecycled()) {
+                    Logger.debug("Recycling when defrosting");
+                    bitmapToBlur.recycle();
+                    blurredSourceBitmap.recycle();
+                    mFrostView.setBackground(null);
+                }
+
                 bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
                 mFrostView.setAlpha(1);
 

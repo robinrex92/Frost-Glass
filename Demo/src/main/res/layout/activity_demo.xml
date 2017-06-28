@@ -25,13 +25,14 @@
         android:layout_height="100dp"
         android:id="@+id/demoFrostView"
         android:layout_marginTop="50dp"
+        app:blurRadius="4"
         android:layout_centerHorizontal="true"/>
 
     <in.robinrex.frostglass.FGLayout
         android:layout_width="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        app:overlayColor="#99000000"
+        app:overlayColor="#22000000"
         android:padding="50dp"
         android:id="@+id/demoFrostLayout"
         android:layout_marginLeft="10dp"

@@ -30,23 +30,25 @@ public class DemoActivity extends FrostableActivity {
         setContentView(R.layout.activity_demo);
 
         demoView = (TextView) findViewById(R.id.demoView);
-//        demoFrostView = (FGView) findViewById(R.id.demoFrostView);
-//        demoFrostLayout = (FGLayout) findViewById(R.id.demoFrostLayout);
-//        demoFrostLayoutTextView = (TextView) findViewById(R.id.demoLayoutView);
+        demoFrostView = (FGView) findViewById(R.id.demoFrostView);
+        demoFrostLayout = (FGLayout) findViewById(R.id.demoFrostLayout);
+        demoFrostLayoutTextView = (TextView) findViewById(R.id.demoLayoutView);
 //
 //        // Set the background views that will be used for frosting. It has to be kept in mind that FGView and FGLayout
 //        // should not be a child of the passed view. This will be fixed in the future versions.
-//        demoFrostView.frostWith(demoView);
-//        demoFrostLayout.frostWith(demoView);
+        demoFrostView.frostWith(demoView);
+        demoFrostLayout.frostWith(demoView);
+
+        demoFrostView.enableLiveMode();
 //
-//        ViewDragger.enableDragging(demoFrostView);
-//        ViewDragger.enableDragging(demoFrostLayout);
+        ViewDragger.enableDragging(demoFrostView);
+        ViewDragger.enableDragging(demoFrostLayout);
 //
 //        // Animates a text in the screen to demonstrate live frosting.
         startTextChanger();
 //
 //        // Enables and disabled live frost mode on the demo view with a delay between every toggle.
-////        autoToggleLiveMode();
+        autoToggleLiveMode();
 //
 //
 //        //The following code is for activity blurring using FrostGlass.
@@ -58,15 +60,6 @@ public class DemoActivity extends FrostableActivity {
 //
 //        getFrostGlass().setOverlayColor(Color.parseColor("#44000000"));
 
-        //set the radius of the blur.
-        staticFrost(12);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                liveFrost(12);
-            }
-        }, 5000);
     }
 
     private void autoToggleLiveMode() {
@@ -123,6 +116,6 @@ public class DemoActivity extends FrostableActivity {
         if (getFrostGlass().isFrosted()) {
             defrost();
         } else
-            liveFrost(17);
+            liveFrost(8);
     }
 }

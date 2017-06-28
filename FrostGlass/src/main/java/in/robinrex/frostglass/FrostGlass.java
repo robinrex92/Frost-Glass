@@ -1,6 +1,5 @@
 package in.robinrex.frostglass;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -227,39 +226,26 @@ public class FrostGlass implements Choreographer.FrameCallback {
         //Check whether we already have added the frosted overlay view to the activity.
         final View prevFrostView = mActivityView.findViewById(R.id.blur_view_id);
 
-        mActivityView.setBackgroundColor(Color.BLACK);
-
-        final View frostView;
+        final View frostOverlay;
 
         //Screen hasn't been frosted before.
         if (prevFrostView == null) {
-            frostView = new View(mActivity);
-            frostView.setId(R.id.blur_view_id);
+            frostOverlay = new View(mActivity);
+            frostOverlay.setId(R.id.blur_view_id);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup
 
                             .LayoutParams.MATCH_PARENT);
-            frostView.setLayoutParams(lp);
+            frostOverlay.setLayoutParams(lp);
         } else {
 
             Logger.info("Reusing existing Frost Glass.");
 
-            frostView = prevFrostView;
+            frostOverlay = prevFrostView;
 
             //Screen has been frosted before, so hide the frost view before getting another screen shot.
-            frostView.setAlpha(0);
+            frostOverlay.setAlpha(0);
         }
-
-//        ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.8f);
-//        recessAnimator.setDuration(mFrostingDuration);
-//        recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                mActivityView.getChildAt(0).setScaleX((Float) animation.getAnimatedValue());
-//                mActivityView.getChildAt(0).setScaleY((Float) animation.getAnimatedValue());
-//            }
-//        });
-//        recessAnimator.start();
 
         final Bitmap sourceBitmap = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
 
@@ -287,17 +273,17 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
                 // TODO: 26/6/17 Check frost mode implementation
                 if (mIsLiveFrostEnabled) {
-                    frostView.setAlpha(0);
+                    frostOverlay.setAlpha(0);
                     bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
-                    frostView.setAlpha(1);
+                    frostOverlay.setAlpha(1);
                 } else {
                     if (mFrostMode == FrostEngine.FrostMode.REFROST) {
                         bitmapToBlur = Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap
                                 .getHeight());
                     } else {
-                        frostView.setAlpha(0);
+                        frostOverlay.setAlpha(0);
                         bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
-                        frostView.setAlpha(1);
+                        frostOverlay.setAlpha(1);
                     }
                 }
 
@@ -307,7 +293,7 @@ public class FrostGlass implements Choreographer.FrameCallback {
                 mFrostedBitmapCanvas = new Canvas(blurredSourceBitmap);
                 mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
 
-                frostView.setBackground(new BitmapDrawable(mActivity.getResources(), blurredSourceBitmap));
+                frostOverlay.setBackground(new BitmapDrawable(mActivity.getResources(), blurredSourceBitmap));
 
                 FrostTimeTracker.frameComplete();
             }
@@ -323,7 +309,7 @@ public class FrostGlass implements Choreographer.FrameCallback {
                     Choreographer.getInstance().postFrameCallback(FrostGlass.this);
                 }
 
-                mFrostView = frostView;
+                mFrostView = frostOverlay;
             }
 
             @Override
@@ -336,7 +322,7 @@ public class FrostGlass implements Choreographer.FrameCallback {
         froster.setDuration(mFrostingDuration);
 
         if (prevFrostView == null)
-            mActivityView.addView(frostView);
+            mActivityView.addView(frostOverlay);
 
         froster.startFrosting();
 
@@ -360,19 +346,6 @@ public class FrostGlass implements Choreographer.FrameCallback {
     }
 
     private void defrost() {
-
-        ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.8f, 1);
-        recessAnimator.setDuration(mFrostingDuration);
-        recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (mActivityView != null) {
-                    mActivityView.getChildAt(0).setScaleX((Float) animation.getAnimatedValue());
-                    mActivityView.getChildAt(0).setScaleY((Float) animation.getAnimatedValue());
-                }
-            }
-        });
-        recessAnimator.start();
 
         FrostEngine.GradualFroster defroster = new FrostEngine.GradualFroster(mBlurRadius, 1) {
 

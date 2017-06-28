@@ -1,9 +1,5 @@
 package in.robinrex.frostglassdemo;
 
-import android.animation.ValueAnimator;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -58,19 +54,19 @@ public class DemoActivity extends FrostableActivity {
         getFrostGlass().setFrostingDuration(100);
 //
 //        //Set the frosting amount. Higher number means more blurring, and faster.
-        getFrostGlass().setDownsampleFactor(8);
+        getFrostGlass().setDownsampleFactor(12);
 //
 //        getFrostGlass().setOverlayColor(Color.parseColor("#44000000"));
 
         //set the radius of the blur.
-//        staticFrost(12);
+        staticFrost(12);
 
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                liveFrost(12);
-//            }
-//        }, 5000);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                liveFrost(12);
+            }
+        }, 5000);
     }
 
     private void autoToggleLiveMode() {
@@ -126,34 +122,7 @@ public class DemoActivity extends FrostableActivity {
     public void defrost(View view) {
         if (getFrostGlass().isFrosted()) {
             defrost();
-        } else {
-
-            final View test = findViewById(R.id.test);
-            ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.8f);
-            recessAnimator.setDuration(100);
-            recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    test.setScaleX((Float) animation.getAnimatedValue());
-                    test.setScaleY((Float) animation.getAnimatedValue());
-                }
-            });
-
-            recessAnimator.start();
-
-            Dialog dialog = new Dialog(this);
-            dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
-            dialog.setContentView(R.layout.dialog);
-            dialog.show();
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    defrost();
-                }
-            });
-
-            liveFrost(8);
-        }
-
+        } else
+            liveFrost(17);
     }
 }

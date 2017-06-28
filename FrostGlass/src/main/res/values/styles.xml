@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -11,18 +11,18 @@
     <!--
         Blur Layout start
      -->
-    <attr name="downSampleFactor" format="integer"/>
-    <attr name="blurRadius" format="integer"/>
-    <attr name="overlayColor" format="color"/>
+    <attr name="downSampleFactor" format="integer" />
+    <attr name="blurRadius" format="integer" />
+    <attr name="overlayColor" format="color" />
 
     <declare-styleable name="FGLayout">
-        <attr name="downSampleFactor"/>
-        <attr name="blurRadius"/>
+        <attr name="downSampleFactor" />
+        <attr name="blurRadius"  />
         <attr name="overlayColor"/>
     </declare-styleable>
 
     <declare-styleable name="FGView">
-        <attr name="downSampleFactor"/>
+        <attr name="downSampleFactor"  />
         <attr name="blurRadius"/>
         <attr name="overlayColor"/>
     </declare-styleable>

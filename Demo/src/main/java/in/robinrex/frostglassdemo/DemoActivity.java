@@ -55,7 +55,7 @@ public class DemoActivity extends FrostableActivity {
 //
 //        //The following code is for activity blurring using FrostGlass.
 //        //Set the frost duration.
-        getFrostGlass().setFrostingDuration(5000);
+        getFrostGlass().setFrostingDuration(100);
 //
 //        //Set the frosting amount. Higher number means more blurring, and faster.
         getFrostGlass().setDownsampleFactor(8);

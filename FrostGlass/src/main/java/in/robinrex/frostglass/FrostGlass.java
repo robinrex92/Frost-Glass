@@ -225,21 +225,23 @@ public class FrostGlass implements Choreographer.FrameCallback {
     private void frost() {
 
         //Check whether we already have added the frosted overlay view to the activity.
-        final View prevFrostView = mActivityView.findViewById(R.id.blur_view_id);
+        final FGLayout prevFrostView = (FGLayout) mActivityView.findViewById(R.id.blur_view_id);
 
         mActivityView.setBackgroundColor(Color.BLACK);
 
-        final View frostView;
+        final FGLayout frostView;
 
         //Screen hasn't been frosted before.
         if (prevFrostView == null) {
-            frostView = new View(mActivity);
+            frostView = new FGLayout(mActivity);
             frostView.setId(R.id.blur_view_id);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup
 
                             .LayoutParams.MATCH_PARENT);
             frostView.setLayoutParams(lp);
+            frostView.enableLiveMode();
+            frostView.frostWith(mActivityView.getChildAt(0));
         } else {
 
             Logger.info("Reusing existing Frost Glass.");
@@ -274,29 +276,31 @@ public class FrostGlass implements Choreographer.FrameCallback {
 
                 FrostTimeTracker.start();
 
-                // TODO: 26/6/17 Check frost mode implementation
-                if (mIsLiveFrostEnabled) {
-                    frostView.setAlpha(0);
-                    bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
-                    frostView.setAlpha(1);
-                } else {
-                    if (mFrostMode == FrostEngine.FrostMode.REFROST) {
-                        bitmapToBlur = Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap
-                                .getHeight());
-                    } else {
-                        frostView.setAlpha(0);
-                        bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
-                        frostView.setAlpha(1);
-                    }
-                }
+//                // TODO: 26/6/17 Check frost mode implementation
+//                if (mIsLiveFrostEnabled) {
+//                    frostView.setAlpha(0);
+//                    bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
+//                    frostView.setAlpha(1);
+//                } else {
+//                    if (mFrostMode == FrostEngine.FrostMode.REFROST) {
+//                        bitmapToBlur = Bitmap.createBitmap(sourceBitmap, 0, 0, sourceBitmap.getWidth(), sourceBitmap
+//                                .getHeight());
+//                    } else {
+//                        frostView.setAlpha(0);
+//                        bitmapToBlur = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
+//                        frostView.setAlpha(1);
+//                    }
+//                }
+//
+//                blurredSourceBitmap = mFrostEngine.frost(bitmapToBlur, currentFrostRadius);
+//
+//                //Overlay drawing
+//                mFrostedBitmapCanvas = new Canvas(blurredSourceBitmap);
+//                mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
+//
+//                frostView.setBackground(new BitmapDrawable(mActivity.getResources(), blurredSourceBitmap));
 
-                blurredSourceBitmap = mFrostEngine.frost(bitmapToBlur, currentFrostRadius);
-
-                //Overlay drawing
-                mFrostedBitmapCanvas = new Canvas(blurredSourceBitmap);
-                mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
-
-                frostView.setBackground(new BitmapDrawable(mActivity.getResources(), blurredSourceBitmap));
+                frostView.setBlurRadius(currentFrostRadius);
 
                 FrostTimeTracker.frameComplete();
             }
@@ -438,23 +442,23 @@ public class FrostGlass implements Choreographer.FrameCallback {
     @Override
     public void doFrame(long frameTimeNanos) {
 
-        if (mFrostView != null && mActivityView != null) {
-
-            mFrostView.setAlpha(0);
-            mFrostedBitmap = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
-            mFrostView.setAlpha(1);
-
-            mFrostedBitmap = mFrostEngine.frost(mFrostedBitmap, mBlurRadius);
-
-            //Overlay paint
-            mFrostedBitmapCanvas = new Canvas(mFrostedBitmap);
-            mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
-
-            mFrostView.setBackground(new BitmapDrawable(mActivityView.getResources(), mFrostedBitmap));
-
-            //Re-post the callback for next frame.
-            Choreographer.getInstance().postFrameCallback(this);
-        }
+//        if (mFrostView != null && mActivityView != null) {
+//
+//            mFrostView.setAlpha(0);
+//            mFrostedBitmap = mFrostEngine.getBitmapForView(mActivityView, mDownsampleFactor);
+//            mFrostView.setAlpha(1);
+//
+//            mFrostedBitmap = mFrostEngine.frost(mFrostedBitmap, mBlurRadius);
+//
+//            //Overlay paint
+//            mFrostedBitmapCanvas = new Canvas(mFrostedBitmap);
+//            mFrostedBitmapCanvas.drawPaint(mOverlayPaint);
+//
+//            mFrostView.setBackground(new BitmapDrawable(mActivityView.getResources(), mFrostedBitmap));
+//
+//            //Re-post the callback for next frame.
+//            Choreographer.getInstance().postFrameCallback(this);
+//        }
 
     }
 

@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import in.robinrex.frostglass.FGLayout;
@@ -127,8 +129,9 @@ public class DemoActivity extends FrostableActivity {
         final View test = findViewById(R.id.test);
         if (getFrostGlass().isFrosted()) {
 
-            ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.8f, 1);
+            ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
             recessAnimator.setDuration(100);
+            recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
             recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -142,11 +145,14 @@ public class DemoActivity extends FrostableActivity {
         } else {
 
 
-            ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.8f);
+            ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.9f);
             recessAnimator.setDuration(100);
+            recessAnimator.setInterpolator(new AccelerateInterpolator(1.8f));
             recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
+
+                    Logger.debug("Defrost : "+animation.getAnimatedValue());
                     test.setScaleX((Float) animation.getAnimatedValue());
                     test.setScaleY((Float) animation.getAnimatedValue());
                 }
@@ -158,11 +164,11 @@ public class DemoActivity extends FrostableActivity {
             dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
             dialog.getWindow().setDimAmount(0f);
             dialog.setContentView(R.layout.dialog);
-            dialog.show();
+//            dialog.show();
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    defrost();
+//                    defrost();
                 }
             });
 

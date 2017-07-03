@@ -12,7 +12,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import in.robinrex.frostglass.FGLayout;
-import in.robinrex.frostglass.FGView;
 import in.robinrex.frostglass.FrostableActivity;
 import in.robinrex.frostglass.Logger;
 
@@ -26,7 +25,7 @@ public class DemoActivity extends FrostableActivity {
 
     TextView demoFrostLayoutTextView;
 
-    FGView demoFrostView;
+    FGLayout demoFrostView;
 
     FGLayout demoFrostLayout;
 
@@ -57,7 +56,7 @@ public class DemoActivity extends FrostableActivity {
 //
 //        //The following code is for activity blurring using FrostGlass.
 //        //Set the frost duration.
-        getFrostGlass().setFrostingDuration(100);
+        getFrostGlass().setFrostingDuration(1000);
 //
 //        //Set the frosting amount. Higher number means more blurring, and faster.
         getFrostGlass().setDownsampleFactor(8);
@@ -85,10 +84,10 @@ public class DemoActivity extends FrostableActivity {
 
                 Logger.debug("Toggling live mode");
                 if (!demoFrostLayout.isLive()) {
-                    demoFrostLayout.enableLiveMode();
+                    demoFrostLayout.setLiveMode(true);
                     demoFrostLayoutTextView.setText(getString(R.string.message_live_mode));
                 } else {
-                    demoFrostLayout.disableLiveMode();
+                    demoFrostLayout.setLiveMode(false);
                     demoFrostLayoutTextView.setText(getString(R.string.message_static_mode));
                 }
 
@@ -130,7 +129,7 @@ public class DemoActivity extends FrostableActivity {
         if (getFrostGlass().isFrosted()) {
 
             ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
-            recessAnimator.setDuration(100);
+            recessAnimator.setDuration(1000);
             recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
             recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -146,8 +145,8 @@ public class DemoActivity extends FrostableActivity {
 
 
             ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.9f);
-            recessAnimator.setDuration(100);
-            recessAnimator.setInterpolator(new AccelerateInterpolator(1.8f));
+            recessAnimator.setDuration(1000);
+            recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
             recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {

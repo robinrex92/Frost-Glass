@@ -21,12 +21,6 @@
         <attr name="overlayColor"/>
     </declare-styleable>
 
-    <declare-styleable name="FGView">
-        <attr name="downSampleFactor"/>
-        <attr name="blurRadius"/>
-        <attr name="overlayColor"/>
-    </declare-styleable>
-
     <!--
        Blur Layout end
     -->

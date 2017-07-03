@@ -38,6 +38,9 @@ public class FGLayout extends FrameLayout implements Choreographer.FrameCallback
 
     private int mBlurRadius = 1;
 
+    private boolean mIsPaused = false
+            ;
+
     public FGLayout(Context context) {
         this(context, null);
     }
@@ -88,14 +91,6 @@ public class FGLayout extends FrameLayout implements Choreographer.FrameCallback
         mOverlayColor = color;
     }
 
-    public void enableLiveMode() {
-        setLiveMode(true);
-    }
-
-    public void disableLiveMode() {
-        setLiveMode(false);
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
 
@@ -126,7 +121,13 @@ public class FGLayout extends FrameLayout implements Choreographer.FrameCallback
         super.dispatchDraw(canvas);
     }
 
-    private void setLiveMode(boolean enabled) {
+    /**
+     * Enables or disables live mode on the Frosted view.
+     *
+     * @param enabled True, if live mode should be enabled. When enabled, the frosted content will be updated for
+     *                each frame.
+     * */
+    public void setLiveMode(boolean enabled) {
 
         if (enabled) {
             Choreographer.getInstance().postFrameCallback(this);
@@ -199,5 +200,15 @@ public class FGLayout extends FrameLayout implements Choreographer.FrameCallback
 
     private void frost() {
         mBlurredBitmap = FrostEngine.getInstance().frost(mBitmapToBlur, mBlurRadius);
+    }
+
+    public void pause() {
+        this.mIsPaused = true;
+        Choreographer.getInstance().removeFrameCallback(this);
+    }
+
+    public void resume() {
+        this.mIsPaused = false;
+        Choreographer.getInstance().postFrameCallback(this);
     }
 }

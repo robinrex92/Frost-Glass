@@ -24,7 +24,7 @@
             android:text="Hello World!"
             android:layout_height="wrap_content"/>
 
-        <in.robinrex.frostglass.FGView
+        <in.robinrex.frostglass.FGLayout
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/demoFrostView"

@@ -294,10 +294,6 @@ public class FrostGlass {
 
         FrostEngine.GradualFroster defroster = new FrostEngine.GradualFroster(mBlurRadius, 1) {
 
-            Bitmap blurredSourceBitmap;
-
-            Bitmap bitmapToBlur;
-
             @Override
             public void onFrostNextFrame(int currentFrostRadius) {
                 mFrostView.setBlurRadius(currentFrostRadius);

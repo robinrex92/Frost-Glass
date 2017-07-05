@@ -56,7 +56,7 @@ public class DemoActivity extends FrostableActivity {
 //
 //        //The following code is for activity blurring using FrostGlass.
 //        //Set the frost duration.
-        getFrostGlass().setFrostingDuration(1000);
+        getFrostGlass().setFrostingDuration(100);
 //
 //        //Set the frosting amount. Higher number means more blurring, and faster.
         getFrostGlass().setDownsampleFactor(8);
@@ -129,7 +129,7 @@ public class DemoActivity extends FrostableActivity {
         if (getFrostGlass().isFrosted()) {
 
             ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
-            recessAnimator.setDuration(1000);
+            recessAnimator.setDuration(100);
             recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
             recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -145,7 +145,7 @@ public class DemoActivity extends FrostableActivity {
 
 
             ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.9f);
-            recessAnimator.setDuration(1000);
+            recessAnimator.setDuration(100);
             recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
             recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -163,11 +163,24 @@ public class DemoActivity extends FrostableActivity {
             dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
             dialog.getWindow().setDimAmount(0f);
             dialog.setContentView(R.layout.dialog);
-//            dialog.show();
+            dialog.show();
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-//                    defrost();
+
+                    ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
+                    recessAnimator.setDuration(100);
+                    recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
+                    recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            test.setScaleX((Float) animation.getAnimatedValue());
+                            test.setScaleY((Float) animation.getAnimatedValue());
+                        }
+                    });
+                    recessAnimator.start();
+
+                    defrost();
                 }
             });
 

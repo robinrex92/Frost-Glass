@@ -89,8 +89,10 @@ public class FrostGlass {
      * @param color The color that will be overlaid, on top of the frost effect.
      */
     public void setOverlayColor(@ColorInt int color) {
-        mOverlayColor = color;
-        mOverlayPaint.setColor(mOverlayColor);
+
+        // TODO: 8/7/17 check null check
+        if(mFrostView != null)
+            mFrostView.setOverlayColor(color);
     }
 
     /**

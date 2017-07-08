@@ -35,22 +35,22 @@
             android:layout_width="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            app:overlayColor="#99000000"
+            app:overlayColor="#44000000"
             android:padding="50dp"
             android:id="@+id/demoFrostLayout"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="50dp"
             android:layout_height="wrap_content">
-            <TextView
+            <in.robinrex.frostglassdemo.ui.DemoTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:textColor="#fff"
                 android:gravity="center"
                 android:id="@+id/demoLayoutView"
-                android:textSize="18sp"
-                android:text="This is a sample layout that demonstrates the ability of the FrostGlass library."
+                android:textSize="22sp"
+                android:text="You can drag me around."
                 />
         </in.robinrex.frostglass.FGLayout>
     </RelativeLayout>

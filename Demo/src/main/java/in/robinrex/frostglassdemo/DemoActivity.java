@@ -35,43 +35,29 @@ public class DemoActivity extends FrostableActivity {
         setContentView(R.layout.activity_demo);
 
         demoView = (TextView) findViewById(R.id.demoView);
-//        demoFrostView = (FGView) findViewById(R.id.demoFrostView);
-//        demoFrostLayout = (FGLayout) findViewById(R.id.demoFrostLayout);
-//        demoFrostLayoutTextView = (TextView) findViewById(R.id.demoLayoutView);
-//
-//        // Set the background views that will be used for frosting. It has to be kept in mind that FGView and FGLayout
-//        // should not be a child of the passed view. This will be fixed in the future versions.
-//        demoFrostView.frostWith(demoView);
-//        demoFrostLayout.frostWith(demoView);
-//
-//        ViewDragger.enableDragging(demoFrostView);
-//        ViewDragger.enableDragging(demoFrostLayout);
-//
-//        // Animates a text in the screen to demonstrate live frosting.
+        demoFrostLayout = (FGLayout) findViewById(R.id.demoFrostLayout);
+        demoFrostLayoutTextView = (TextView) findViewById(R.id.demoLayoutView);
+
+        // Set the background views that will be used for frosting. It has to be kept in mind that FGView and FGLayout
+        // should not be a child of the passed view. This will be fixed in the future versions.
+        demoFrostLayout.frostWith(demoView);
+
+        demoFrostLayout.setLiveMode(true);
+
+        ViewDragger.enableDragging(demoFrostLayout);
+        // Animates a text in the screen to demonstrate live frosting.
         startTextChanger();
-//
-//        // Enables and disabled live frost mode on the demo view with a delay between every toggle.
-////        autoToggleLiveMode();
-//
-//
-//        //The following code is for activity blurring using FrostGlass.
-//        //Set the frost duration.
+
+        //The following code is for activity blurring using FrostGlass.
+        //Set the frost duration.
         getFrostGlass().setFrostingDuration(100);
-//
-//        //Set the frosting amount. Higher number means more blurring, and faster.
+
+        //Set the frosting amount. Higher number means more blurring, and faster.
         getFrostGlass().setDownsampleFactor(8);
-//
-//        getFrostGlass().setOverlayColor(Color.parseColor("#44000000"));
 
-        //set the radius of the blur.
-//        staticFrost(12);
+        //Sets the overlay color of the frost view
+        getFrostGlass().setOverlayColor(Color.parseColor("#99000000"));
 
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                liveFrost(12);
-//            }
-//        }, 5000);
     }
 
     private void autoToggleLiveMode() {
@@ -100,7 +86,7 @@ public class DemoActivity extends FrostableActivity {
 
     private void startTextChanger() {
 
-        final String helloWorld = "HelloWorld!";
+        final String helloWorld = "Click Here";
 
         final Handler textChangeHandler = new Handler();
 

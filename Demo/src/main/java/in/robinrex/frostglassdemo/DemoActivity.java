@@ -56,7 +56,7 @@ public class DemoActivity extends FrostableActivity {
         getFrostGlass().setDownsampleFactor(8);
 
         //Sets the overlay color of the frost view
-        getFrostGlass().setOverlayColor(Color.parseColor("#99000000"));
+        getFrostGlass().setOverlayColor(Color.parseColor("#55000000"));
 
     }
 
@@ -114,6 +114,7 @@ public class DemoActivity extends FrostableActivity {
         final View test = findViewById(R.id.test);
         if (getFrostGlass().isFrosted()) {
 
+            Logger.debug("Trying to defrost");
             ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
             recessAnimator.setDuration(100);
             recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
@@ -124,12 +125,12 @@ public class DemoActivity extends FrostableActivity {
                     test.setScaleY((Float) animation.getAnimatedValue());
                 }
             });
-            recessAnimator.start();
 
-            defrost();
+            if(defrost())
+                recessAnimator.start();
         } else {
 
-
+            Logger.debug("Trying to frost");
             ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.9f);
             recessAnimator.setDuration(100);
             recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
@@ -143,7 +144,7 @@ public class DemoActivity extends FrostableActivity {
                 }
             });
 
-            recessAnimator.start();
+
 
             Dialog dialog = new Dialog(this);
             dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
@@ -153,6 +154,8 @@ public class DemoActivity extends FrostableActivity {
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
+
+                    Logger.debug("Trying to frost i");
 
                     ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
                     recessAnimator.setDuration(100);
@@ -164,13 +167,14 @@ public class DemoActivity extends FrostableActivity {
                             test.setScaleY((Float) animation.getAnimatedValue());
                         }
                     });
-                    recessAnimator.start();
 
-                    defrost();
+                    if(defrost())
+                        recessAnimator.start();
                 }
             });
 
-            liveFrost(8);
+            if(liveFrost(8))
+                recessAnimator.start();
         }
 
     }

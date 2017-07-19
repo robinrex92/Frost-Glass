@@ -44,9 +44,9 @@ public class FrostGlass {
 
     private FGLayout mFrostView = null;
 
-    private FrameLayout mActivityView;
+    private boolean mIsFrosted = false;
 
-    private Bitmap mFrostedBitmap;
+    private FrameLayout mActivityView;
 
     private int mDownsampleFactor = DEFAULT_DOWNSAMPLE_FACTOR;
 
@@ -89,8 +89,6 @@ public class FrostGlass {
      * @param color The color that will be overlaid, on top of the frost effect.
      */
     public void setOverlayColor(@ColorInt int color) {
-
-        // TODO: 8/7/17 check null check
         if(mFrostView != null)
             mFrostView.setOverlayColor(color);
     }
@@ -101,7 +99,8 @@ public class FrostGlass {
      * {@link #mBlurRadius}.
      */
     public void setDownsampleFactor(@IntRange(from = 1, to = 100) int downsampleFactor) {
-        this.mDownsampleFactor = downsampleFactor;
+        if(mFrostView != null)
+            mFrostView.setDownsampleFactor(downsampleFactor);
     }
 
     /**
@@ -126,17 +125,18 @@ public class FrostGlass {
      * @param blurRadius The blur radius that will be passed to the frost engine. The higher the radius, the more the
      *                   frosting effect.
      */
-    public void staticFrost(int blurRadius) {
+    public boolean staticFrost(int blurRadius) {
 
         if (!canFrost())
-            return;
+            return false;
 
         if (isFrosted() && isLive()) {
             frostImmediate(blurRadius, false);
-            return;
+            return true;
         }
 
         frostScreen(blurRadius, false);
+        return true;
     }
 
     /**
@@ -150,17 +150,18 @@ public class FrostGlass {
      * @param blurRadius The blur radius that will be passed to the frost engine. The higher the radius, the more the
      *                   frosting effect.
      */
-    public void liveFrost(int blurRadius) {
+    public boolean liveFrost(int blurRadius) {
 
         if (!canFrost())
-            return;
+            return false;
 
         if (isFrosted() && !isLive()) {
             frostImmediate(blurRadius, true);
-            return;
+            return true;
         }
 
         frostScreen(blurRadius, true);
+        return true;
     }
 
     private void frostImmediate(int blurRadius, boolean isLive) {
@@ -212,11 +213,13 @@ public class FrostGlass {
      * activity to show the frosting effect. If no frosting is active, either static or live, this method doesn't
      * do anything.
      */
-    public void defrostScreen() {
+    public boolean defrostScreen() {
         if (!canDefrost())
-            return;
+            return false;
 
         defrost();
+
+        return true;
     }
 
     private void frost() {
@@ -252,6 +255,7 @@ public class FrostGlass {
                 FrostTimeTracker.start();
 
                 mFrostView.setBlurRadius(currentFrostRadius);
+                mFrostView.invalidate();
 
                 FrostTimeTracker.frameComplete();
             }
@@ -259,6 +263,8 @@ public class FrostGlass {
             @Override
             public void onFrostingComplete() {
                 mIsFrostingDefrostingInProcess = false;
+
+                mIsFrosted = true;
 
                 FrostTimeTracker.printAverageTime();
             }
@@ -290,6 +296,9 @@ public class FrostGlass {
         mActivityView = null;
 
         mFrostView = null;
+
+        mIsFrosted = false;
+
     }
 
     private void defrost() {
@@ -299,11 +308,14 @@ public class FrostGlass {
             @Override
             public void onFrostNextFrame(int currentFrostRadius) {
                 mFrostView.setBlurRadius(currentFrostRadius);
+                mFrostView.invalidate();
             }
 
             @Override
             public void onFrostingComplete() {
                 mIsFrostingDefrostingInProcess = false;
+
+                mIsFrosted = false;
 
                 //if live frost has been enabled, mark as disabled, and remove callbacks.
                 mIsLiveFrostEnabled = false;
@@ -329,7 +341,7 @@ public class FrostGlass {
     private boolean canDefrost() {
 
         if (mIsFrostingDefrostingInProcess) {
-            Logger.error("Frosting/Defrosting already in progress.");
+            Logger.error("Defrost : Frosting/Defrosting already in progress.");
             return false;
         }
 
@@ -344,7 +356,7 @@ public class FrostGlass {
     private boolean canFrost() {
 
         if (mIsFrostingDefrostingInProcess) {
-            Logger.error("Frosting/Defrosting already in progress.");
+            Logger.error("Frost : Frosting/Defrosting already in progress.");
             return false;
         }
 
@@ -383,7 +395,7 @@ public class FrostGlass {
      * @return Returns true if either static or live frosting is currently applied, false otherwise.
      */
     public boolean isFrosted() {
-        return (mFrostView != null);
+        return mFrostView != null && mIsFrosted;
     }
 
     /**

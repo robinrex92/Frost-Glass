@@ -65,14 +65,22 @@ public class FGLayout extends FrameLayout implements Choreographer.FrameCallback
 
     public void frostWith(View blurredView) {
         mBlurredView = blurredView;
+        invalidate();
     }
 
     public void setEdgePadding(boolean enabled) {
         mEdgePaddingEnabled = enabled;
+        invalidate();
     }
 
     public void setBlurRadius(int radius) {
         mBlurRadius = radius;
+        invalidate();
+    }
+
+    public void setDownsampleFactor(int factor) {
+        mDownsampleFactor = factor;
+        invalidate();
     }
 
     public void setFrostQuality(@IntRange(from = 1, to = 100) int factor) {

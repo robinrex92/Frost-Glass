@@ -24,19 +24,19 @@ public class FrostableActivity extends AppCompatActivity {
         return mFrostGlass;
     }
 
-    public void staticFrost(int blurRadius) {
-        if (mFrostGlass != null)
-            mFrostGlass.staticFrost(blurRadius);
+    public boolean staticFrost(int blurRadius) {
+        return mFrostGlass != null && mFrostGlass.staticFrost(blurRadius);
+
     }
 
-    public void liveFrost(int blurRadius) {
-        if (mFrostGlass != null)
-            mFrostGlass.liveFrost(blurRadius);
+    public boolean liveFrost(int blurRadius) {
+        return mFrostGlass != null && mFrostGlass.liveFrost(blurRadius);
+
     }
 
-    public void defrost() {
-        if (mFrostGlass != null)
-            mFrostGlass.defrostScreen();
+    public boolean defrost() {
+        return mFrostGlass != null && mFrostGlass.defrostScreen();
+
     }
 
     @Override

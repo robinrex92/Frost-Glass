@@ -73,8 +73,8 @@ public class FrostEngine {
     }
 
     /**
-     * Applies frosting effect the given view by extracting a bitmap from the view. The frosting is done with the
-     * given radius.
+     * Applies frosting effect the given view by extracting a bitmap from the view. Then frosting is done on the
+     * bitmap  with the given radius.
      *
      * @param src    The source view on which the frosting effect has to be applied.
      * @param radius The radius of the frosting effect. (Blur radius).

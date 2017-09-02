@@ -1,12 +1,16 @@
 package in.robinrex.frostglassdemo;
 
+import android.animation.ValueAnimator;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import in.robinrex.frostglass.FGLayout;
-import in.robinrex.frostglass.FGView;
 import in.robinrex.frostglass.FrostableActivity;
 import in.robinrex.frostglass.Logger;
 
@@ -20,7 +24,7 @@ public class DemoActivity extends FrostableActivity {
 
     TextView demoFrostLayoutTextView;
 
-    FGView demoFrostView;
+    FGLayout demoFrostView;
 
     FGLayout demoFrostLayout;
 
@@ -30,35 +34,28 @@ public class DemoActivity extends FrostableActivity {
         setContentView(R.layout.activity_demo);
 
         demoView = (TextView) findViewById(R.id.demoView);
-        demoFrostView = (FGView) findViewById(R.id.demoFrostView);
         demoFrostLayout = (FGLayout) findViewById(R.id.demoFrostLayout);
         demoFrostLayoutTextView = (TextView) findViewById(R.id.demoLayoutView);
-//
-//        // Set the background views that will be used for frosting. It has to be kept in mind that FGView and FGLayout
-//        // should not be a child of the passed view. This will be fixed in the future versions.
-        demoFrostView.frostWith(demoView);
+
+        // Set the background views that will be used for frosting. It has to be kept in mind that FGView and FGLayout
+        // should not be a child of the passed view. This will be fixed in the future versions.
         demoFrostLayout.frostWith(demoView);
 
-        demoFrostView.enableLiveMode();
-//
-        ViewDragger.enableDragging(demoFrostView);
+        demoFrostLayout.setLiveMode(true);
+
         ViewDragger.enableDragging(demoFrostLayout);
-//
-//        // Animates a text in the screen to demonstrate live frosting.
+        // Animates a text in the screen to demonstrate live frosting.
         startTextChanger();
-//
-//        // Enables and disabled live frost mode on the demo view with a delay between every toggle.
-        autoToggleLiveMode();
-//
-//
-//        //The following code is for activity blurring using FrostGlass.
-//        //Set the frost duration.
+
+        //The following code is for activity blurring using FrostGlass.
+        //Set the frost duration.
         getFrostGlass().setFrostingDuration(100);
-//
-//        //Set the frosting amount. Higher number means more blurring, and faster.
-        getFrostGlass().setDownsampleFactor(12);
-//
-//        getFrostGlass().setOverlayColor(Color.parseColor("#44000000"));
+
+        //Set the frosting amount. Higher number means more blurring, and faster.
+        getFrostGlass().setDownsampleFactor(8);
+
+        //Sets the overlay color of the frost view
+        getFrostGlass().setOverlayColor(Color.parseColor("#55000000"));
 
     }
 
@@ -72,10 +69,10 @@ public class DemoActivity extends FrostableActivity {
 
                 Logger.debug("Toggling live mode");
                 if (!demoFrostLayout.isLive()) {
-                    demoFrostLayout.enableLiveMode();
+                    demoFrostLayout.setLiveMode(true);
                     demoFrostLayoutTextView.setText(getString(R.string.message_live_mode));
                 } else {
-                    demoFrostLayout.disableLiveMode();
+                    demoFrostLayout.setLiveMode(false);
                     demoFrostLayoutTextView.setText(getString(R.string.message_static_mode));
                 }
 
@@ -88,7 +85,7 @@ public class DemoActivity extends FrostableActivity {
 
     private void startTextChanger() {
 
-        final String helloWorld = "HelloWorld!";
+        final String helloWorld = "Click Here";
 
         final Handler textChangeHandler = new Handler();
 
@@ -113,9 +110,68 @@ public class DemoActivity extends FrostableActivity {
 
     //Defrosts the frost glass and thus, making the activity clearly visible again.
     public void defrost(View view) {
+        final View test = findViewById(R.id.test);
         if (getFrostGlass().isFrosted()) {
-            defrost();
-        } else
-            liveFrost(8);
+
+            Logger.debug("Trying to defrost");
+            ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
+            recessAnimator.setDuration(100);
+            recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
+            recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    test.setScaleX((Float) animation.getAnimatedValue());
+                    test.setScaleY((Float) animation.getAnimatedValue());
+                }
+            });
+
+            if (defrost())
+                recessAnimator.start();
+        } else {
+
+            Logger.debug("Trying to frost");
+            ValueAnimator recessAnimator = ValueAnimator.ofFloat(1, 0.9f);
+            recessAnimator.setDuration(100);
+            recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
+            recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+
+                    Logger.debug("Defrost : " + animation.getAnimatedValue());
+                    test.setScaleX((Float) animation.getAnimatedValue());
+                    test.setScaleY((Float) animation.getAnimatedValue());
+                }
+            });
+
+            Dialog dialog = new Dialog(this);
+            dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
+            dialog.getWindow().setDimAmount(0f);
+            dialog.setContentView(R.layout.dialog);
+            dialog.show();
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+
+                    Logger.debug("Trying to frost i");
+
+                    ValueAnimator recessAnimator = ValueAnimator.ofFloat(0.9f, 1);
+                    recessAnimator.setDuration(100);
+                    recessAnimator.setInterpolator(new DecelerateInterpolator(1.8f));
+                    recessAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            test.setScaleX((Float) animation.getAnimatedValue());
+                            test.setScaleY((Float) animation.getAnimatedValue());
+                        }
+                    });
+
+                    if (defrost())
+                        recessAnimator.start();
+                }
+            });
+
+            if (liveFrost(8))
+                recessAnimator.start();
+        }
     }
 }

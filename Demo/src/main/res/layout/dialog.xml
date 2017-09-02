@@ -3,26 +3,18 @@
               android:orientation="vertical"
               android:layout_width="wrap_content"
               android:padding="50dp"
-              android:background="#44ffffff"
+              android:background="#44000000"
               android:layout_height="wrap_content">
 
-        <TextView
+        <in.robinrex.frostglassdemo.ui.DemoTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:textColor="#fff"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="This is a sample text in the dialog."
+            android:text="This is a sample text in the dialog. Press back to dismiss."
             />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="6dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_margin="20dp"
-        android:background="#ffffff"
-        android:text="Sample"/>
 
 </LinearLayout>

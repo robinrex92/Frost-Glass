@@ -144,8 +144,6 @@ public class DemoActivity extends FrostableActivity {
                 }
             });
 
-
-
             Dialog dialog = new Dialog(this);
             dialog.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
             dialog.getWindow().setDimAmount(0f);

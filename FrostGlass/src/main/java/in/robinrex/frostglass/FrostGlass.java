@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 /**
- * This is the core Frost Glass component. This is not a view or a layout. This class can be used with any activity,
+ * This is the core Frost Glass component. This class can be used with any activity,
  * when you need to just apply the frost effect to  the entire activity.
  *
  * @author Robin Rex G.
@@ -62,8 +62,6 @@ public class FrostGlass {
     private int mOverlayColor = DEFAULT_OVERLAY_COLOR;
 
     private Canvas mFrostedBitmapCanvas;
-
-    private FrostEngine.FrostMode mFrostMode = FrostEngine.FrostMode.ORIGINAL;
 
     private boolean mIsFrostingDefrostingInProcess = false;
 
@@ -192,7 +190,7 @@ public class FrostGlass {
 
         mIsLiveFrostEnabled = isLive;
 
-        //Check if is view is laid out and is ready to be frosted.
+        //Check if is view is laid out and is ready to be blurred.
         ViewObserver.observeView(mActivityView, new ViewObserver.ViewObserverCallback() {
 
             @Override
@@ -232,9 +230,7 @@ public class FrostGlass {
             mFrostView = new FGLayout(mActivity);
             mFrostView.setId(R.id.blur_view_id);
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup
-
-                            .LayoutParams.MATCH_PARENT);
+                    ViewGroup.LayoutParams.MATCH_PARENT);
             mFrostView.setLayoutParams(lp);
             mFrostView.setLiveMode(isLive());
             mFrostView.frostWith(mActivityView.getChildAt(0));

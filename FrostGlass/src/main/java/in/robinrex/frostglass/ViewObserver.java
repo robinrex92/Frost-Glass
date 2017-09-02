@@ -10,7 +10,7 @@ import android.view.ViewTreeObserver;
 
 public class ViewObserver {
 
-    public static boolean isReady(View view) {
+    private static boolean isReady(View view) {
         return view != null && !(view.getWidth() == 0 && view.getHeight() == 0);
     }
 
@@ -39,7 +39,7 @@ public class ViewObserver {
             @Override
             public void onGlobalLayout() {
 
-                if (view.getWidth() > 0 && view.getHeight() > 0) {
+                if (isReady(view)) {
 
                     view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
